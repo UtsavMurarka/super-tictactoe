@@ -1,0 +1,21 @@
+.cell {
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
+
+    &.top-row {
+        border-top: none;
+    }
+
+    &.bottom-row {
+        border-bottom: none;
+    }
+
+    &.leftmost-col {
+        border-left: none;
+    }
+
+    &.rightmost-col {
+        border-right: none;
+    }
+}
