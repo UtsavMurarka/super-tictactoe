@@ -1,8 +1,12 @@
 import SocketProvider, { SocketContext } from '@/components/websocket/websocket';
 import { useContext } from 'react';
+import { useRouter } from 'next/router';
+import Grid from '../components/grid/grid';
 
 function welcomeChild() {
-    let socket = useContext(SocketContext)
+    let socket = useContext(SocketContext);
+    const router = useRouter();
+
     function handleCellClick() {
         let data = {row: 0, col: 0};
         socket.emit('cellClick', data);
@@ -11,7 +15,8 @@ function welcomeChild() {
 
     function handleCreateSession() {
         socket.emit('createSession', {});
-        console.log("Create session event emitted.")
+        console.log("Create session event emitted.");
+        router.push('/game');
     }
 
     let sessionId = ''
