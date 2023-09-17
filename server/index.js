@@ -1,5 +1,18 @@
 const express = require("express");
 const socket = require("socket.io");
+const { updateBoardState } = require("./gameUtils");
+
+const INITIAL_BOARD_STATE = [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+];
 
 // App setup
 const PORT = 5000;
@@ -47,7 +60,9 @@ io.on("connection", function (socket) {
             player1: playerId,
             player2: null,
             player1Moves: [],
-            player2Moves: []
+            player2Moves: [],
+            boardState: INITIAL_BOARD_STATE,
+            lastMove: null,
         }
         sessions.set(sessionId, newSession);
 
@@ -88,8 +103,10 @@ io.on("connection", function (socket) {
             let session = sessions.get(sessionId);
             if (session.player1 === playerId) {
                 session.player1Moves.push(data);
+                session = updateBoardState(session, data);
             } else if (session.player2 === playerId) {
                 session.player2Moves.push(data);
+                session = updateBoardState(session, data);
             } else {
                 socket.emit('exception', {errorMessage: 'No player found corresponding to playerId: ' + playerId});
             }
