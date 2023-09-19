@@ -1,9 +1,9 @@
 function updateBoardState(session, move) {
     var currSymbol = -1;
-    if (session.lastMove == null) {
+    if (move.player == "player1") {
         currSymbol = 0;
-    } else {
-        var currSymbol = 1 - session.boardState[session.lastMove['row']][session.lastMove['col']];
+    } else if (move.player == "player2") {
+        currSymbol = 1;
     }
     session.boardState[move['row']][move['col']] = currSymbol;
     session.lastMove = move;
