@@ -5,9 +5,12 @@ import { useContext } from 'react';
 
 export default function Cell(prop: CellProp) {
   let {row, col}  = prop
-  let socket = useContext(SocketContext)
+  let socket = useContext(SocketContext);
+  let player = sessionStorage.getItem('player');
+
   function handleClick() {
-    let data = {row, col};
+    let sessionId = sessionStorage.getItem('sessionId');
+    let data = {row, col, player, sessionId};
     console.log("Event emitted.", data)
     if (!socket) {
       console.error("socket connection not found")

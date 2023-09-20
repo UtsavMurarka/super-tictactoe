@@ -1,8 +1,15 @@
 import SocketProvider, { SocketContext } from '@/components/websocket/websocket';
 import { useContext } from 'react';
+import { useRouter } from 'next/router';
 
 function welcomeChild() {
-    let socket = useContext(SocketContext)
+    let socket = useContext(SocketContext);
+    const router = useRouter();
+
+    socket.on('sessionCreated', function(data) {
+        sessionStorage.setItem("sessionId", data.sessionId);
+    })
+
     function handleCellClick() {
         let data = {row: 0, col: 0};
         socket.emit('cellClick', data);
@@ -10,8 +17,10 @@ function welcomeChild() {
     }
 
     function handleCreateSession() {
-        socket.emit('createSession', {});
-        console.log("Create session event emitted.")
+        sessionStorage.setItem("player", "player1");
+        socket.emit('createSession', {player: "player1"});
+        console.log("Create session event emitted.");
+        router.push('/game');
     }
 
     let sessionId = ''
@@ -21,8 +30,10 @@ function welcomeChild() {
     function handleOnBlur(event: any) {
     }
     function handleJoinSession() {
-        console.log("Join session event emitted.", sessionId)
-        socket.emit('joinSession', {sessionId: sessionId});
+        sessionStorage.setItem("player", "player2");
+        console.log("Join session event emitted.", sessionId);
+        socket.emit('joinSession', {sessionId: sessionId, player: "player2"});
+        router.push('/game');
     }
 
     return (
