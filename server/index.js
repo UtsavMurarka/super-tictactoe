@@ -1,18 +1,6 @@
 const express = require("express");
 const socket = require("socket.io");
-const { updateBoardState } = require("./gameUtils");
-
-const INITIAL_BOARD_STATE = [
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-    [-1, -1, -1, -1, -1, -1, -1, -1, -1]
-];
+const { updateBoardState, getInitialBoard } = require("./gameUtils");
 
 // App setup
 const PORT = 5000;
@@ -62,7 +50,7 @@ io.on("connection", function (socket) {
             player2: null,
             player1Moves: [],
             player2Moves: [],
-            boardState: INITIAL_BOARD_STATE,
+            boardState: getInitialBoard(),
             lastMove: null,
         }
         sessions.set(sessionId, newSession);
