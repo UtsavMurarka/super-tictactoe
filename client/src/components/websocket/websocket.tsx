@@ -1,6 +1,6 @@
 import { createContext, useEffect, useMemo } from "react";
 import { io, Socket } from "socket.io-client";
-import { SocketContextProps } from "@/constants/game";
+import { ChildrenProps } from "@/constants/game";
 
 const initialiseSocket = () => {
     console.log("Socket connection initialised")
@@ -9,7 +9,7 @@ const initialiseSocket = () => {
 
 export const SocketContext = createContext<Socket>(initialiseSocket())
 
-export default function SocketProvider(props:SocketContextProps) {
+export default function SocketProvider(props:ChildrenProps) {
     var socket: Socket
     socket = useMemo(initialiseSocket, [])
     useEffect(() => {

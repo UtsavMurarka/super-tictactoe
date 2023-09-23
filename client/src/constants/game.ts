@@ -13,9 +13,10 @@ export type CellProp = {
     col: number
   }
 
-export type SocketContextProps = {
+export type ChildrenProps = {
   children: JSX.Element
 }
+
 
 export var threebythree: GAMESIZE = {
     row: 3,

@@ -44,6 +44,7 @@ io.on("connection", function (socket) {
         let playerId = data.player;
         console.log("createSession", data, playerId);
         let sessionId = Math.random().toString(36).substring(2, 7);
+        socket.join(sessionId);
         let newSession = {
             sessionId: sessionId,
             player1: playerId,
@@ -73,7 +74,7 @@ io.on("connection", function (socket) {
                 console.log('Session is full')
             } else {
                 session.player2 = playerId;
-                // currPlayer.sessionId = sessionIdToJoin;
+                socket.join(sessionIdToJoin);
                 console.log('Successfully joined session', session);
                 socket.emit('sessionCreated', {sessionId: sessionIdToJoin});
             }
@@ -85,21 +86,16 @@ io.on("connection", function (socket) {
 
     socket.on("cellClick", function (data) {
         let playerId = data.player;
-        console.log("cellClick", data, playerId);
-        // let sessionId = currPlayer.sessionId;
         let sessionId = data.sessionId;
         if (!sessions.has(sessionId)) {
             socket.emit('exception', {errorMessage: 'No session found for sessionId' + sessionId});
             console.log('No session found for sessionId ' + sessionId);
         } else {
             let session = sessions.get(sessionId);
-            if (session.player1 === playerId) {
-                session.player1Moves.push(data);
+            if (session.player1 === playerId || session.player2 === playerId) {
                 session = updateBoardState(session, data);
-            } else if (session.player2 === playerId) {
-                session.player2Moves.push(data);
-                session = updateBoardState(session, data);
-            } else {
+                socket.to(sessionId).emit('updateBoard', session.lastMove)
+            }  else {
                 socket.emit('exception', {errorMessage: 'No player found corresponding to playerId: ' + playerId});
             }
             console.log(session);

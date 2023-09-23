@@ -1,15 +1,19 @@
 import styles from './cell.module.css'
 import { CellProp, threebythree } from "@/constants/game";
 import { SocketContext } from '../websocket/websocket';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 export default function Cell(prop: CellProp) {
+  const [storage, setStorage] = useState<Storage>()
+  useEffect(()=>{
+    setStorage(sessionStorage)
+  }, [])
   let {row, col}  = prop
   let socket = useContext(SocketContext);
-  let player = sessionStorage.getItem('player');
+  let player = storage?.getItem('player');
 
   function handleClick() {
-    let sessionId = sessionStorage.getItem('sessionId');
+    let sessionId = storage?.getItem('sessionId');
     let data = {row, col, player, sessionId};
     console.log("Event emitted.", data)
     if (!socket) {
@@ -34,6 +38,7 @@ export default function Cell(prop: CellProp) {
 
   return (
     <div onClick={handleClick} className={clname}>
+      
     </div>
   )
 }
