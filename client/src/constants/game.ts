@@ -5,12 +5,17 @@ export type GAMESIZE = {
 
 export type RowProp = {
     row: number,
+    rowValues: number[]
   }
 
+export type GridProp = {
+  boardState: number[][]
+}
 
 export type CellProp = {
     row: number,
-    col: number
+    col: number,
+    cellValue: number
   }
 
 export type ChildrenProps = {

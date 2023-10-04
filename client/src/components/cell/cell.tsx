@@ -8,7 +8,7 @@ export default function Cell(prop: CellProp) {
   useEffect(()=>{
     setStorage(sessionStorage)
   }, [])
-  let {row, col}  = prop
+  let {row, col, cellValue}  = prop
   let socket = useContext(SocketContext);
   let player = storage?.getItem('player');
 
@@ -38,7 +38,7 @@ export default function Cell(prop: CellProp) {
 
   return (
     <div onClick={handleClick} className={clname}>
-      
+      {cellValue == -1 ? '' : (cellValue == 0 ? 'X' : 'O')}
     </div>
   )
 }
