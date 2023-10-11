@@ -18,6 +18,7 @@ function welcomeChild() {
 
     function handleCreateSession() {
         sessionStorage.setItem("player", "player1");
+        
         socket.emit('createSession', {player: "player1"});
         console.log("Create session event emitted.");
         router.push('/game');
