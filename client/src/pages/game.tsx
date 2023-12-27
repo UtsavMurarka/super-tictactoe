@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import Grid from '../components/grid/grid'
-import SocketProvider, {SocketContext} from '@/components/websocket/websocket';
+import SocketProvider, {getSocketContext} from '@/components/websocket/websocket';
 import { threebythree } from "@/constants/game";
 import { getInitialBoard } from '@/helper/gameUtils';
 
@@ -15,7 +15,11 @@ export default function Game() {
   const [boardState, setBoardState] = useState(getInitialBoard(threebythree.row));
   
 
-  let socket = useContext(SocketContext)
+  let socket = getSocketContext()
+  if (socket === undefined) {
+    console.log("no socket")
+    return
+  }
   socket.on('updateBoard', function(data) {
     const newBoardState = [...boardState];
     newBoardState[data.row][data.col] = data.player == 'player1' ? 0 : 1;
@@ -23,16 +27,16 @@ export default function Game() {
   })
 
   return (
-    <SocketProvider >
-      <div>
-        <Grid boardState={boardState}/>
-        {
-          <div>
-            Player: {storage?.getItem('player')}
-            SessionID: {storage?.getItem('sessionId')}
-          </div>
-        }
-      </div>
+    <SocketProvider>
+    <div>
+      <Grid boardState={boardState}/>
+      {
+        <div>
+          Player: {storage?.getItem('player')}
+          SessionID: {storage?.getItem('sessionId')}
+        </div>
+      }
+    </div>
     </SocketProvider>
   )
 }
