@@ -1,25 +1,31 @@
 import styles from './cell.module.css'
 import { CellProp, threebythree } from "@/constants/game";
-import { SocketContext } from '../websocket/websocket';
+import { getSocketContext } from '../websocket/websocket';
 import { useContext, useEffect, useState } from 'react';
-
+import { useTurnContext } from '../turnProvider/turnProvider';
 export default function Cell(prop: CellProp) {
   const [storage, setStorage] = useState<Storage>()
+  const { turn, setTurn } = useTurnContext()
   useEffect(()=>{
     setStorage(sessionStorage)
   }, [])
   let {row, col, cellValue}  = prop
-  let socket = useContext(SocketContext);
+  let socket = getSocketContext();
   let player = storage?.getItem('player');
-
   function handleClick() {
     let sessionId = storage?.getItem('sessionId');
+    if(!turn) {
+      console.log("not yout turn yet!")
+      return;
+    }
     let data = {row, col, player, sessionId};
     console.log("Event emitted.", data)
-    if (!socket) {
+    if (socket === undefined) {
       console.error("socket connection not found")
+      return
     }
     socket.emit('cellClick', data);
+    setTurn(!turn)
   }
   let {row: maxRow, col: maxCols} = threebythree
   let clname = styles.cell

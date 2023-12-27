@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { io, Socket } from "socket.io-client";
 import { ChildrenProps } from "@/constants/game";
 
@@ -7,19 +7,22 @@ const initialiseSocket = () => {
     return io("http://localhost:5000", {});
 }
 
-export const SocketContext = createContext<Socket>(initialiseSocket())
+const SocketContext = createContext<Socket | undefined>(undefined)
 
 export default function SocketProvider(props:ChildrenProps) {
-    var socket: Socket
-    socket = useMemo(initialiseSocket, [])
-    useEffect(() => {
-        return () => {
-            socket.close()
-        };
-    }, []);
+    const socket = useMemo(initialiseSocket, [])
     return (
         <SocketContext.Provider value={socket}>
             {props.children}
         </SocketContext.Provider>
     )
+}
+
+export const getSocketContext = ()=> {
+    if (SocketContext === undefined) {
+        console.error("Socket was uninitialised!")
+        return undefined
+    } else {
+        return useContext(SocketContext);
+    }
 }
