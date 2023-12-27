@@ -1,8 +1,10 @@
 import  { getSocketContext } from '@/components/websocket/websocket';
+import { useTurnContext } from '@/components/turnProvider/turnProvider';
 import { useRouter } from 'next/router';
 
 export default function welcomeChild() {
     let socket = getSocketContext();
+    const {setTurn} = useTurnContext()
     const router = useRouter();
     if (socket === undefined) {
         return <div>Undefined socket</div>
@@ -29,6 +31,7 @@ export default function welcomeChild() {
         }
         socket.emit('createSession', {player: "player1"});
         console.log("Create session event emitted.");
+        setTurn(true)
         router.push('/game');
     }
 
@@ -45,6 +48,7 @@ export default function welcomeChild() {
             return
         }
         socket.emit('joinSession', {sessionId: sessionId, player: "player2"});
+        setTurn(false)
         router.push('/game');
     }
 
