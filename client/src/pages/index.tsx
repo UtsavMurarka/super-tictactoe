@@ -1,3 +1,4 @@
+import styles from './index.module.css'
 import SocketProvider, { SocketContext } from '@/components/websocket/websocket';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
@@ -9,12 +10,6 @@ function welcomeChild() {
     socket.on('sessionCreated', function(data) {
         sessionStorage.setItem("sessionId", data.sessionId);
     })
-
-    function handleCellClick() {
-        let data = {row: 0, col: 0};
-        socket.emit('cellClick', data);
-        console.log("Cell Click Event emitted.", data)
-    }
 
     function handleCreateSession() {
         sessionStorage.setItem("player", "player1");
@@ -35,14 +30,18 @@ function welcomeChild() {
         socket.emit('joinSession', {sessionId: sessionId, player: "player2"});
         router.push('/game');
     }
-
+    const baseStyle = styles.container
     return (
-        <div>
-            <button onClick={handleCellClick}>Cell Click</button>
-            <button onClick={handleCreateSession}>Create Session</button>
-            <button onClick={handleJoinSession}>Join Session</button>
-            <label htmlFor="name">Name (4 to 8 characters):</label>
-            <input type="text" id="name" name="name" onChange={(e) => handleInput(e)} onBlur={handleOnBlur}/>
+        <div className={baseStyle}>
+            <div className={baseStyle.concat(" ", styles.newGame)}>
+                <button className={styles.newGamebtn} onClick={handleCreateSession}>Create Session</button>
+            </div>
+            <h2 className={styles.divider}>OR</h2>
+            <div className={baseStyle.concat(' ', styles.joinGame)}>
+                <h2>Join an existing session</h2>
+                <input  className={styles.input} type="text" id="name" name="name" onChange={(e) => handleInput(e)} onBlur={handleOnBlur} placeholder='session id'/>
+                <button className={styles.joinGamebtn} onClick={handleJoinSession}>Join Session</button>
+            </div>
         </div>
     )
 }
